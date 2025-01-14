@@ -1,0 +1,756 @@
+openapi: 3.0.3
+info:
+  title: Ixian Explorer API
+  description: A RESTful API for interacting with the Ixian Explorer.
+  contact:
+    email: contact@ixilabs.com
+  version: 1.0.0
+externalDocs:
+  description: Find out more about Ixian
+  url: http://ixian.io
+servers:
+  - url: https://explorer.ixian.io/api/v1
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: API-KEY
+security:
+  - ApiKeyAuth: []
+paths:
+  /network/status:
+    get:
+      summary: Get network status
+      operationId: getNetworkStatus
+      description: Retrieve the current network status including block height, hash rate, difficulty, and node statistics.
+      security:
+        - ApiKeyAuth: []
+      responses:
+        '200':
+          description: Successful response with network status data.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  blockheight:
+                    type: integer
+                    description: The current block height of the network.
+                    example: 4043166
+                  date:
+                    type: string
+                    format: date-time
+                    description: The timestamp of the latest block.
+                    example: "2024-03-13 21:12:31"
+                  totalixi:
+                    type: string
+                    description: Total IXI in circulation.
+                    example: "9982084855"
+                  hashrate:
+                    type: integer
+                    description: Current network hash rate.
+                    example: 37463198
+                  difficulty:
+                    type: string
+                    description: Current network difficulty.
+                    example: "18446206245528829067"
+                  blockratio:
+                    type: number
+                    format: float
+                    description: Block mining ratio.
+                    example: 50.17
+                  nodes_m:
+                    type: integer
+                    description: Number of mining nodes.
+                    example: 266
+                  nodes_r:
+                    type: integer
+                    description: Number of relay nodes.
+                    example: 5
+                  nodes_c:
+                    type: integer
+                    description: Number of consensus nodes.
+                    example: 8
+        '500':
+          description: Server error when network data cannot be retrieved.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Error message indicating the issue.
+                    example: "Failed to retrieve network status"
+
+
+  /blocks/{height}:
+    get:
+      summary: Get block by height
+      operationId: getBlockByHeight
+      description: Retrieve detailed information about a specific block by its height.
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - name: height
+          in: path
+          required: true
+          description: The height of the block to retrieve.
+          schema:
+            type: integer
+            example: 4043144
+      responses:
+        '200':
+          description: Successful response with block details.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    description: The unique identifier of the block.
+                    example: 4043144
+                  blockChecksum:
+                    type: string
+                    description: The checksum of the current block.
+                    example: "6cfd990d6fcc6ee77d2f17db3fe6f56eea62d2146b6e86a1abe7873e4057a1cd979746fd4cab74fd2371c992af3d99d01ab30246da3e73173b4d2685a2ecc389"
+                  lastBlockChecksum:
+                    type: string
+                    description: The checksum of the previous block.
+                    example: "183ce965201f904c5c2021cdc868a9f0c5ab096070032c8dd1ef0175a712b6ee3fed039a398f6d20798f9a4959ac0bdd7e474eb1dd3d3ed238cf6e783aae4cdb"
+                  wsChecksum:
+                    type: string
+                    description: The wallet state checksum of the block.
+                    example: "55d0bea00df7aaf786f957ec6ef46a3916d79bd591a90260b5acd97a05f80ea2d9ffb09f4a8a6247a9e4b1b7504fc3ebfe8e4fdaa6f344e6c99adc8fa75eea06"
+                  sigFreezeChecksum:
+                    type: string
+                    description: The signature freeze checksum.
+                    example: "5c7205396624e7c65eb3cd138cd20e790c41f746f8e77e76538b6e7881fde9916e6d0650f6f8ac2560d44524a73e45a8db353921c714a6c47d294409c6c8d53f"
+                  powField:
+                    type: string
+                    description: The proof-of-work field for the block.
+                    example: "8bb13d0000000000"
+                  difficulty:
+                    type: string
+                    description: The network difficulty for the block.
+                    example: "18445768702423840888"
+                  sigCount:
+                    type: integer
+                    description: The number of signatures included in the block.
+                    example: 260
+                  txCount:
+                    type: integer
+                    description: The number of transactions in the block.
+                    example: 29
+                  txAmount:
+                    type: string
+                    description: The total amount of transactions in the block.
+                    example: "38736.73659109"
+                  timestamp:
+                    type: string
+                    description: The timestamp of the block.
+                    example: "1710356483"
+                  version:
+                    type: integer
+                    description: The version of the block.
+                    example: 10
+                  hashrate:
+                    type: string
+                    description: The hash rate during the block's creation.
+                    example: "20657532"
+                  blocktime:
+                    type: integer
+                    description: The time taken to create the block.
+                    example: 401316
+                  totalSignerDifficulty:
+                    type: string
+                    description: Total signer difficulty for the block.
+                    example: "5234117637461.84808576"
+                  sigRequired:
+                    type: integer
+                    description: The number of signatures required for consensus.
+                    example: 195
+                  requiredSignerDifficulty:
+                    type: string
+                    description: The difficulty required per signer.
+                    example: "93391816058.65307541"
+                  sigChecksum:
+                    type: string
+                    description: The checksum of all signatures in the block.
+                    example: "42b1a6c12af0a1425260431f20c57cd671c676ea7c0504be919f1e8b96ceccea88473c1aba34cf31e2a1284eaa0d7de9cd46dd9fc30aadea014436c3ad3a2336"
+        '500':
+          description: Server error when block data cannot be retrieved.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Error message indicating the issue.
+                    example: "Failed to retrieve block"
+
+  /blocks/latest:
+    get:
+      summary: Get latest block
+      operationId: getLatestBlock
+      description: Retrieve detailed information about the latest block.
+      security:
+        - ApiKeyAuth: []
+      responses:
+        '200':
+          description: Successful response with latest block details.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    description: The unique identifier of the block.
+                    example: 4043144
+                  blockChecksum:
+                    type: string
+                    description: The checksum of the current block.
+                    example: "6cfd990d6fcc6ee77d2f17db3fe6f56eea62d2146b6e86a1abe7873e4057a1cd979746fd4cab74fd2371c992af3d99d01ab30246da3e73173b4d2685a2ecc389"
+                  lastBlockChecksum:
+                    type: string
+                    description: The checksum of the previous block.
+                    example: "183ce965201f904c5c2021cdc868a9f0c5ab096070032c8dd1ef0175a712b6ee3fed039a398f6d20798f9a4959ac0bdd7e474eb1dd3d3ed238cf6e783aae4cdb"
+                  wsChecksum:
+                    type: string
+                    description: The wallet state checksum of the block.
+                    example: "55d0bea00df7aaf786f957ec6ef46a3916d79bd591a90260b5acd97a05f80ea2d9ffb09f4a8a6247a9e4b1b7504fc3ebfe8e4fdaa6f344e6c99adc8fa75eea06"
+                  sigFreezeChecksum:
+                    type: string
+                    description: The signature freeze checksum.
+                    example: "5c7205396624e7c65eb3cd138cd20e790c41f746f8e77e76538b6e7881fde9916e6d0650f6f8ac2560d44524a73e45a8db353921c714a6c47d294409c6c8d53f"
+                  powField:
+                    type: string
+                    description: The proof-of-work field for the block.
+                    example: "8bb13d0000000000"
+                  difficulty:
+                    type: string
+                    description: The network difficulty for the block.
+                    example: "18445768702423840888"
+                  sigCount:
+                    type: integer
+                    description: The number of signatures included in the block.
+                    example: 260
+                  txCount:
+                    type: integer
+                    description: The number of transactions in the block.
+                    example: 29
+                  txAmount:
+                    type: string
+                    description: The total amount of transactions in the block.
+                    example: "38736.73659109"
+                  timestamp:
+                    type: string
+                    description: The timestamp of the block.
+                    example: "1710356483"
+                  version:
+                    type: integer
+                    description: The version of the block.
+                    example: 10
+                  hashrate:
+                    type: string
+                    description: The hash rate during the block's creation.
+                    example: "20657532"
+                  blocktime:
+                    type: integer
+                    description: The time taken to create the block.
+                    example: 401316
+                  totalSignerDifficulty:
+                    type: string
+                    description: Total signer difficulty for the block.
+                    example: "5234117637461.84808576"
+                  sigRequired:
+                    type: integer
+                    description: The number of signatures required for consensus.
+                    example: 195
+                  requiredSignerDifficulty:
+                    type: string
+                    description: The difficulty required per signer.
+                    example: "93391816058.65307541"
+                  sigChecksum:
+                    type: string
+                    description: The checksum of all signatures in the block.
+                    example: "42b1a6c12af0a1425260431f20c57cd671c676ea7c0504be919f1e8b96ceccea88473c1aba34cf31e2a1284eaa0d7de9cd46dd9fc30aadea014436c3ad3a2336"
+        '500':
+          description: Server error when latest block data cannot be retrieved.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Error message indicating the issue.
+                    example: "Failed to retrieve block"
+
+
+  /transactions/{tx_id}:
+    get:
+      summary: Get transaction by ID
+      operationId: getTransactionById
+      description: Retrieve detailed information about a specific transaction by its ID.
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - name: tx_id
+          in: path
+          required: true
+          description: The unique identifier of the transaction to retrieve.
+          schema:
+            type: string
+            example: "4043142-h7S562HrPNUUAjiPdXSZ3L7Ei23d1aHUkxL1eBWo9wkp5Mof6f447u6ED19G"
+      responses:
+        '200':
+          description: Successful response with transaction details.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  txid:
+                    type: string
+                    description: The unique identifier of the transaction.
+                    example: "4043142-h7S562HrPNUUAjiPdXSZ3L7Ei23d1aHUkxL1eBWo9wkp5Mof6f447u6ED19G"
+                  blockNr:
+                    type: integer
+                    description: The block number in which the transaction was included.
+                    example: 4043142
+                  nonce:
+                    type: string
+                    description: The nonce value of the transaction.
+                    example: "859880"
+                  signature:
+                    type: string
+                    description: The signature of the transaction.
+                    example: "74339a2c8f9534cb669e309071df4c44a87d32b134a64133de0940a3cdc766fd..."
+                  data:
+                    type: string
+                    description: Any data associated with the transaction.
+                    example: ""
+                  timestamp:
+                    type: string
+                    description: The timestamp when the transaction was created.
+                    example: "1710356487"
+                  type:
+                    type: string
+                    description: The type of the transaction.
+                    example: "0"
+                  amount:
+                    type: string
+                    description: The amount of the transaction.
+                    example: "2881.51662599"
+                  applied:
+                    type: integer
+                    description: The block number where the transaction was applied.
+                    example: 4043144
+                  checksum:
+                    type: string
+                    description: The checksum of the transaction.
+                    example: "7b5db2ffe254c7e861984e49a9103724033d318fd6547029a680ee79fec27eaf..."
+                  from:
+                    type: string
+                    description: The sender address and amount.
+                    example: "{\"53c8dYnNHUZNehtSSvpM1C8ftbicixUDxTsAtVJTpAnyfG1RUF79VNZ4zmcBAQeXp\":\"2881.52662599\"}"
+                  to:
+                    type: string
+                    description: The recipient address and amount.
+                    example: "{\"3WpWLkr3J1sGMzNgYoKyHcsCGLw8immULHHbmAtwcYccAaev1LV2iqQ1wVQkFwfCP\":\"2881.51662599\"}"
+                  fee:
+                    type: string
+                    description: The transaction fee.
+                    example: "0.01000000"
+                  version:
+                    type: integer
+                    description: The version of the transaction.
+                    example: 7
+        '500':
+          description: Server error when transaction data cannot be retrieved.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating the issue.
+                    example: "Failed to retrieve transaction"
+
+  /addresses/{addr}:
+    get:
+      summary: Get address details
+      operationId: getAddressDetails
+      description: Retrieve details about a specific blockchain address, including its balance, last block interacted with, and transaction count.
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - name: addr
+          in: path
+          required: true
+          description: The blockchain address to retrieve details for.
+          schema:
+            type: string
+            example: "162jKGsGuakWrg37TNVg8puLUavJ8WrdiTwnd3XeosZGcXNhv"
+      responses:
+        '200':
+          description: Successful response with address details.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  address:
+                    type: string
+                    description: The blockchain address.
+                    example: "162jKGsGuakWrg37TNVg8puLUavJ8WrdiTwnd3XeosZGcXNhv"
+                  amount:
+                    type: string
+                    description: The total amount associated with the address.
+                    example: "48955615.21703791"
+                  lastblock:
+                    type: integer
+                    description: The height of the last block that interacted with this address.
+                    example: 2120108
+                  txcount:
+                    type: integer
+                    description: The total number of transactions involving this address.
+                    example: 107
+        '404':
+          description: Server error when address data cannot be retrieved.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating the issue.
+                    example: "Address not found"
+
+  /addresses/{addr}/transactions:
+    get:
+      summary: Get transactions for an address
+      operationId: getAddressTransactions
+      description: Retrieve a list of transactions associated with a specific address. The response can be paginated and sorted.
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - name: addr
+          in: path
+          required: true
+          description: The blockchain address to retrieve transactions for.
+          schema:
+            type: string
+            example: "162jKGsGuakWrg37TNVg8puLUavJ8WrdiTwnd3XeosZGcXNhv"
+        - name: limit
+          in: query
+          description: The number of transactions to return per page. Default is 100.
+          schema:
+            type: integer
+            default: 100
+            example: 25
+        - name: page
+          in: query
+          description: The page number to retrieve. Default is 1.
+          schema:
+            type: integer
+            default: 1
+            example: 2
+        - name: sort
+          in: query
+          description: The sort order of the transactions. Default is ascending ("asc").
+          schema:
+            type: string
+            enum: [asc, desc]
+            default: asc
+      responses:
+        '200':
+          description: Successful response with a list of transactions.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    txid:
+                      type: string
+                      description: The unique identifier of the transaction.
+                      example: "4043142-h7S562HrPNUUAjiPdXSZ3L7Ei23d1aHUkxL1eBWo9wkp5Mof6f447u6ED19G"
+                    blockNr:
+                      type: integer
+                      description: The block number in which the transaction was included.
+                      example: 4043142
+                    nonce:
+                      type: string
+                      description: The nonce value of the transaction.
+                      example: "859880"
+                    signature:
+                      type: string
+                      description: The signature of the transaction.
+                      example: "74339a2c8f9534cb669e309071df4c44a87d32b134a64133de0940a3cdc766fd..."
+                    data:
+                      type: string
+                      description: Any data associated with the transaction.
+                      example: ""
+                    timestamp:
+                      type: string
+                      description: The timestamp when the transaction was created.
+                      example: "1710356487"
+                    type:
+                      type: string
+                      description: The type of the transaction.
+                      example: "0"
+                    amount:
+                      type: string
+                      description: The amount of the transaction.
+                      example: "2881.51662599"
+                    applied:
+                      type: integer
+                      description: The block number where the transaction was applied.
+                      example: 4043144
+                    checksum:
+                      type: string
+                      description: The checksum of the transaction.
+                      example: "7b5db2ffe254c7e861984e49a9103724033d318fd6547029a680ee79fec27eaf..."
+                    from:
+                      type: string
+                      description: The sender address and amount.
+                      example: "{\"53c8dYnNHUZNehtSSvpM1C8ftbicixUDxTsAtVJTpAnyfG1RUF79VNZ4zmcBAQeXp\":\"2881.52662599\"}"
+                    to:
+                      type: string
+                      description: The recipient address and amount.
+                      example: "{\"3WpWLkr3J1sGMzNgYoKyHcsCGLw8immULHHbmAtwcYccAaev1LV2iqQ1wVQkFwfCP\":\"2881.51662599\"}"
+                    fee:
+                      type: string
+                      description: The transaction fee.
+                      example: "0.01000000"
+                    version:
+                      type: integer
+                      description: The version of the transaction.
+                      example: 7
+        '500':
+          description: Server error when transactions cannot be retrieved.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating the issue.
+                    example: "Failed to retrieve transactions"
+
+  /addresses/{addr}/recent:
+    get:
+      summary: Get recent transactions for an address
+      operationId: getRecentAddressTransactions
+      description: Retrieve the most recent transactions associated with a specific address, sorted in descending order. An optional limit parameter can be provided.
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - name: addr
+          in: path
+          required: true
+          description: The address to retrieve recent transactions for.
+          schema:
+            type: string
+            example: "162jKGsGuakWrg37TNVg8puLUavJ8WrdiTwnd3XeosZGcXNhv"
+        - name: limit
+          in: query
+          description: The number of recent transactions to retrieve. Default is 100.
+          schema:
+            type: integer
+            default: 100
+            example: 25
+      responses:
+        '200':
+          description: Successful response with a list of recent transactions.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    txid:
+                      type: string
+                      description: The unique identifier of the transaction.
+                      example: "4043142-h7S562HrPNUUAjiPdXSZ3L7Ei23d1aHUkxL1eBWo9wkp5Mof6f447u6ED19G"
+                    blockNr:
+                      type: integer
+                      description: The block number in which the transaction was included.
+                      example: 4043142
+                    nonce:
+                      type: string
+                      description: The nonce value of the transaction.
+                      example: "859880"
+                    signature:
+                      type: string
+                      description: The signature of the transaction.
+                      example: "74339a2c8f9534cb669e309071df4c44a87d32b134a64133de0940a3cdc766fd..."
+                    data:
+                      type: string
+                      description: Any data associated with the transaction.
+                      example: ""
+                    timestamp:
+                      type: string
+                      description: The timestamp when the transaction was created.
+                      example: "1710356487"
+                    type:
+                      type: string
+                      description: The type of the transaction.
+                      example: "0"
+                    amount:
+                      type: string
+                      description: The amount of the transaction.
+                      example: "2881.51662599"
+                    applied:
+                      type: integer
+                      description: The block number where the transaction was applied.
+                      example: 4043144
+                    checksum:
+                      type: string
+                      description: The checksum of the transaction.
+                      example: "7b5db2ffe254c7e861984e49a9103724033d318fd6547029a680ee79fec27eaf..."
+                    from:
+                      type: string
+                      description: The sender address and amount.
+                      example: "{\"53c8dYnNHUZNehtSSvpM1C8ftbicixUDxTsAtVJTpAnyfG1RUF79VNZ4zmcBAQeXp\":\"2881.52662599\"}"
+                    to:
+                      type: string
+                      description: The recipient address and amount.
+                      example: "{\"3WpWLkr3J1sGMzNgYoKyHcsCGLw8immULHHbmAtwcYccAaev1LV2iqQ1wVQkFwfCP\":\"2881.51662599\"}"
+                    fee:
+                      type: string
+                      description: The transaction fee.
+                      example: "0.01000000"
+                    version:
+                      type: integer
+                      description: The version of the transaction.
+                      example: 7
+        '500':
+          description: Server error when recent transactions cannot be retrieved.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating the issue.
+                    example: "Failed to retrieve transactions"
+
+  /addresses/{addr}/updates:
+    get:
+      summary: Get address updates since last transaction
+      operationId: getAddressUpdates
+      description: Retrieve transactions for a specific blockchain address that occurred after a specified transaction ID (`lastTx`). An optional limit parameter can be provided.
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - name: addr
+          in: path
+          required: true
+          description: The blockchain address to retrieve updates for.
+          schema:
+            type: string
+            example: "162jKGsGuakWrg37TNVg8puLUavJ8WrdiTwnd3XeosZGcXNhv"
+        - name: lastTx
+          in: query
+          required: true
+          description: The transaction ID after which updates should be fetched.
+          schema:
+            type: string
+            example: "stk-2120100-2120105-234PebiQT3MUVKb9NXpCEPXH2WYbK8ZisaD9bVe6KYbX7rFLGP8M92nZf5PDL"
+        - name: limit
+          in: query
+          description: The number of transactions to retrieve. Default is 100.
+          schema:
+            type: integer
+            default: 100
+            example: 25
+      responses:
+        '200':
+          description: Successful response with a list of transactions since the specified transaction ID.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    txid:
+                      type: string
+                      description: The unique identifier of the transaction.
+                      example: "4043142-h7S562HrPNUUAjiPdXSZ3L7Ei23d1aHUkxL1eBWo9wkp5Mof6f447u6ED19G"
+                    blockNr:
+                      type: integer
+                      description: The block number in which the transaction was included.
+                      example: 4043142
+                    nonce:
+                      type: string
+                      description: The nonce value of the transaction.
+                      example: "859880"
+                    signature:
+                      type: string
+                      description: The signature of the transaction.
+                      example: "74339a2c8f9534cb669e309071df4c44a87d32b134a64133de0940a3cdc766fd..."
+                    data:
+                      type: string
+                      description: Any data associated with the transaction.
+                      example: ""
+                    timestamp:
+                      type: string
+                      description: The timestamp when the transaction was created.
+                      example: "1710356487"
+                    type:
+                      type: string
+                      description: The type of the transaction.
+                      example: "0"
+                    amount:
+                      type: string
+                      description: The amount of the transaction.
+                      example: "2881.51662599"
+                    applied:
+                      type: integer
+                      description: The block number where the transaction was applied.
+                      example: 4043144
+                    checksum:
+                      type: string
+                      description: The checksum of the transaction.
+                      example: "7b5db2ffe254c7e861984e49a9103724033d318fd6547029a680ee79fec27eaf..."
+                    from:
+                      type: string
+                      description: The sender address and amount.
+                      example: "{\"53c8dYnNHUZNehtSSvpM1C8ftbicixUDxTsAtVJTpAnyfG1RUF79VNZ4zmcBAQeXp\":\"2881.52662599\"}"
+                    to:
+                      type: string
+                      description: The recipient address and amount.
+                      example: "{\"3WpWLkr3J1sGMzNgYoKyHcsCGLw8immULHHbmAtwcYccAaev1LV2iqQ1wVQkFwfCP\":\"2881.51662599\"}"
+                    fee:
+                      type: string
+                      description: The transaction fee.
+                      example: "0.01000000"
+                    version:
+                      type: integer
+                      description: The version of the transaction.
+                      example: 7
+        '500':
+          description: Server error when updates cannot be retrieved.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating the issue.
+                    example: "Failed to retrieve transactions"
