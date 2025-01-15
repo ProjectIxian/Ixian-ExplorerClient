@@ -14,6 +14,8 @@ Ixian-ExplorerClient is a console-based software designed to expose a RESTful AP
 - Ixian Explorer API key
 - .NET SDK (version 8.0 or higher)
 
+## Usage
+
 1. Clone the repository:
    ```sh
    git clone https://github.com/yourusername/Ixian-ExplorerClient.git
