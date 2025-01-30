@@ -64,6 +64,12 @@ namespace IxianExplorerClient.Meta
                 return;
             }
 
+
+            if (Config.apiBinds.Count == 0)
+            {
+                Config.apiBinds.Add("http://localhost:" + Config.apiPort + "/");
+            }
+
             Console.WriteLine("Connecting to Ixian network...");
 
             // Setup the stats console
@@ -75,6 +81,9 @@ namespace IxianExplorerClient.Meta
 
             // Init TIV
             tiv = new TransactionInclusion();
+
+            // Start activity scanner
+            ActivityScanner.start();
         }
 
         private bool initWallet()
@@ -185,6 +194,9 @@ namespace IxianExplorerClient.Meta
                 apiServer = null;
             }
 
+            // Stop activity scanning
+            ActivityScanner.stop();
+
             // Stop activity storage
             ActivityStorage.stopStorage();
 
@@ -208,11 +220,6 @@ namespace IxianExplorerClient.Meta
 
             // Start the network client manager
             NetworkClientManager.start(2);
-
-            if (Config.apiBinds.Count == 0)
-            {
-                Config.apiBinds.Add("http://localhost:" + Config.apiPort + "/");
-            }
 
             // Start the API server
             apiServer = new APIServer(Config.apiBinds, Config.apiUsers, Config.apiAllowedIps);

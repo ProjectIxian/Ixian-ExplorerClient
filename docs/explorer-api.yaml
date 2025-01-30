@@ -4,7 +4,7 @@ info:
   description: A RESTful API for interacting with the Ixian Explorer.
   contact:
     email: contact@ixilabs.com
-  version: 1.0.0
+  version: 1.0.1
 externalDocs:
   description: Find out more about Ixian
   url: http://ixian.io
@@ -180,6 +180,17 @@ paths:
                     type: string
                     description: The checksum of all signatures in the block.
                     example: "42b1a6c12af0a1425260431f20c57cd671c676ea7c0504be919f1e8b96ceccea88473c1aba34cf31e2a1284eaa0d7de9cd46dd9fc30aadea014436c3ad3a2336"
+        '404':
+          description: Server error when block is not found.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Error message indicating the issue.
+                    example: "Block not found"
         '500':
           description: Server error when block data cannot be retrieved.
           content:
@@ -371,6 +382,17 @@ paths:
                     type: integer
                     description: The version of the transaction.
                     example: 7
+        '404':
+          description: Server error when transaction is not found.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating the issue.
+                    example: "Transaction not found"
         '500':
           description: Server error when transaction data cannot be retrieved.
           content:
@@ -423,7 +445,7 @@ paths:
                     description: The total number of transactions involving this address.
                     example: 107
         '404':
-          description: Server error when address data cannot be retrieved.
+          description: Server error when address is not found.
           content:
             application/json:
               schema:
@@ -433,6 +455,17 @@ paths:
                     type: string
                     description: Error message indicating the issue.
                     example: "Address not found"
+        '500':
+          description: Server error when address data cannot be retrieved.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating the issue.
+                    example: "Address data is not available"
 
   /addresses/{addr}/transactions:
     get:
@@ -536,8 +569,8 @@ paths:
                       type: integer
                       description: The version of the transaction.
                       example: 7
-        '500':
-          description: Server error when transactions cannot be retrieved.
+        '404':
+          description: Server error when no transactions are found for the specified address.
           content:
             application/json:
               schema:
@@ -546,7 +579,7 @@ paths:
                   error:
                     type: string
                     description: Error message indicating the issue.
-                    example: "Failed to retrieve transactions"
+                    example: "No transactions found"
 
   /addresses/{addr}/recent:
     get:
@@ -636,8 +669,8 @@ paths:
                       type: integer
                       description: The version of the transaction.
                       example: 7
-        '500':
-          description: Server error when recent transactions cannot be retrieved.
+        '404':
+          description: Server error when no recent transactions are found for the specified address
           content:
             application/json:
               schema:
@@ -646,7 +679,7 @@ paths:
                   error:
                     type: string
                     description: Error message indicating the issue.
-                    example: "Failed to retrieve transactions"
+                    example: "No recent transactions found"
 
   /addresses/{addr}/updates:
     get:
@@ -743,8 +776,8 @@ paths:
                       type: integer
                       description: The version of the transaction.
                       example: 7
-        '500':
-          description: Server error when updates cannot be retrieved.
+        '404':
+          description: Server response when no transactions are found.
           content:
             application/json:
               schema:
@@ -753,4 +786,4 @@ paths:
                   error:
                     type: string
                     description: Error message indicating the issue.
-                    example: "Failed to retrieve transactions"
+                    example: "No transactions found"
