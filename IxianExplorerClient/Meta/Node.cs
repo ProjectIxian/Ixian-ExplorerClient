@@ -77,7 +77,7 @@ namespace IxianExplorerClient.Meta
 
             PeerStorage.init("");
 
-            ActivityStorage.prepareStorage();
+            ActivityStorage.prepareStorage("", false);
 
             // Init TIV
             tiv = new TransactionInclusion();
@@ -399,7 +399,7 @@ namespace IxianExplorerClient.Meta
             return BlockHeaderStorage.getBlockHeader(blockNum);
         }
 
-        public override IxiNumber getMinSignerPowDifficulty(ulong blockNum, long a)
+        public override IxiNumber getMinSignerPowDifficulty(ulong blockNum, int curBlockVersion, long curBlockTimestamp)
         {
             // TODO TODO implement this properly
             return ConsensusConfig.minBlockSignerPowDifficulty;
