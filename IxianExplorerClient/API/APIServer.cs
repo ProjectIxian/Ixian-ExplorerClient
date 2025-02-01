@@ -1,4 +1,5 @@
-﻿using IXICore;
+﻿using IxianExplorerClient.Meta;
+using IXICore;
 using System.Net;
 
 
@@ -17,9 +18,14 @@ namespace IxianExplorerClient.API
             JsonResponse? response = null;
 
             // Override default activity endpoint
-            if (methodName.Equals("activity", StringComparison.OrdinalIgnoreCase))
+            if (!Config.enableActivityScanner && methodName.Equals("activity", StringComparison.OrdinalIgnoreCase))
             {
                 response = onActivity(parameters);
+            }
+
+            if (methodName.Equals("scan", StringComparison.OrdinalIgnoreCase))
+            {
+                response = onScan(parameters);
             }
 
             // Check for default endpoints
@@ -72,9 +78,15 @@ namespace IxianExplorerClient.API
 
         private JsonResponse onActivity(Dictionary<string, object> parameters)
         {
-            return new JsonResponse { result = null, error = new JsonError() { code = (int)RPCErrorCode.RPC_INTERNAL_ERROR, message = "Activity not implemented" } };
+            return new JsonResponse { result = null, error = new JsonError() { code = (int)RPCErrorCode.RPC_INTERNAL_ERROR, message = "Activity not enabled" } };
         }
 
+        private JsonResponse onScan(Dictionary<string, object> parameters)
+        {
+            ActivityScanner.clearStorage();
+            ActivityScanner.fetchAll();
+            return new JsonResponse { result = null, error = null };
+        }
 
     }
 }

@@ -71,10 +71,11 @@ namespace IxianExplorerClient.Meta
             bool update_avail = false;
 
             int connectionsOut = NetworkClientManager.getConnectedClients(true).Count();
+            string url = Config.apiBinds.First();
 
             writeLine("Ixian Explorer Lite Client");
             writeLine("Version: {0}", Config.version + " BETA ");
-            writeLine("API: {0}", "http://localhost:" + Config.apiPort + "/");
+            writeLine("API: {0}", url);
             writeLine("──────────────────────────────────────────────────────");
             if (update_avail)
             {
@@ -115,10 +116,16 @@ namespace IxianExplorerClient.Meta
             writeLine("");
             writeLine(" Wallet File:          {0}", Config.walletFile);
             writeLine(" Number of addresses:  {0}", IxianHandler.getWalletStorage().getMyAddresses().Count);
-            writeLine(" Primary Wallet Address:\n {0}", IxianHandler.getWalletStorage().getPrimaryAddress().ToString());
+            writeLine(" Primary Wallet Address:\n {0}", IxianHandler.getWalletStorage().getPrimaryAddress().ToString());           
 
-            writeLine("");
+            writeLine("");           
             writeLine(" Transactions Added:   {0}", Node.transactionsAdded);
+
+            string activityStatus = "off";
+            if (ActivityScanner.isActive()) activityStatus = "active";
+            if (ActivityScanner.isSyncing()) activityStatus = "syncing";
+            writeLine(" Activity Scanner:     {0}", activityStatus);
+
             writeLine("──────────────────────────────────────────────────────");
             
             TimeSpan elapsed = DateTime.UtcNow - startTime;
