@@ -16,9 +16,10 @@ Ixian-ExplorerClient is a console-based software designed to expose a RESTful AP
 
 ## Usage
 
-1. Clone the repository:
+1. Clone the repos:
    ```sh
-   git clone https://github.com/yourusername/Ixian-ExplorerClient.git
+   git clone https://github.com/ProjectIxian/Ixian-Core.git
+   git clone https://github.com/ProjectIxian/Ixian-ExplorerClient.git
    cd Ixian-ExplorerClient
    ```
 
@@ -31,7 +32,7 @@ Ixian-ExplorerClient is a console-based software designed to expose a RESTful AP
 3. Run the software:
    ```sh
    cd IxianExplorerClient/bin/Release/net8.0/
-   ./IxianExplorerClient --apikey YOURAPIKEY
+   ./IxianExplorerClient --apiKey YOURAPIKEY
    ```
 
 ### Accessing the API
@@ -71,10 +72,11 @@ curl http://localhost:8001/addresses/16LUmwUnU9M4Wn92nrvCStj83LDCRwvAaSio6Xtb3yv
 
 Configuration is done via the command line by providing the following parameters:
 
-- `--apikey`: Required. Specifies the Explorer API key.
-- `--apiurl`: Optional. Specifies a custom Explorer API URL. Default is `https://explorer.ixian.io/api/v1`
+- `--apiKey`: Required. Specifies the Explorer API key.
+- `--apiUrl`: Optional. Specifies a custom Explorer API URL. Default is `https://explorer.ixian.io/api/v1`
 - `-w`: Optional. Specifies a different wallet name when the software starts. Default is `ixian.wal`
 
+The API Key and URL can also be provided via the .cfg file.
 Alternatively, the API key can be hardcoded by modifying the `Meta/Config.cs` file and supplying the `explorerAPIKey` with the proper value.
 
 ## Get in touch / Contributing

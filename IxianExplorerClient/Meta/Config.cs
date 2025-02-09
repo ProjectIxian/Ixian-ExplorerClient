@@ -38,7 +38,7 @@ namespace IxianExplorerClient.Meta
             Console.WriteLine("");
             Console.WriteLine(" IxianExplorerClient.exe [-h] [-v] [-a 8081] [-i ip] [-w ixian.wal]");
             Console.WriteLine("   [--config ixian.cfg] [--maxLogSize 50] [--maxLogCount 10] [--logVerbosity 14]");
-            Console.WriteLine("   [--apiurl https://explorer.ixian.io/api/v1] [--apikey YOUR_API_KEY] [--disableActivity]");
+            Console.WriteLine("   [--apiUrl https://explorer.ixian.io/api/v1] [--apiKey YOUR_API_KEY] [--disableActivity]");
             Console.WriteLine("");
             Console.WriteLine("    -h\t\t\t Displays this help");
             Console.WriteLine("    -v\t\t\t Displays version");
@@ -170,7 +170,7 @@ namespace IxianExplorerClient.Meta
             // config file
             cmd_parser.Setup<string>("config").Callback(value => configFile = value).Required();
 
-            cmd_parser.Setup<int>('a', "apiport").Callback(value => apiPort = value).Required();
+            cmd_parser.Setup<int>('a', "apiPort").Callback(value => apiPort = value).Required();
 
             cmd_parser.Setup<string>('i', "ip").Callback(value => externalIp = value).Required();
 
@@ -187,7 +187,7 @@ namespace IxianExplorerClient.Meta
 
             if (explorerAPIKey == "")
             {
-                Console.WriteLine("ERROR: Ixian Explorer API KEY is missing!\nAdd it using the --apikey commandline parameter");
+                Console.WriteLine("ERROR: Ixian Explorer API KEY is missing!\nAdd it using the --apiKey commandline parameter");
                 return false;
             }
 
