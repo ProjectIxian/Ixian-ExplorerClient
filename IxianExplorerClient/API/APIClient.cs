@@ -140,7 +140,7 @@ namespace IxianExplorerClient.API
                 string txid = transactionElement.GetProperty("txid").GetString()!;
                 int type = int.Parse(transactionElement.GetProperty("type").GetString()!);
                 string data = transactionElement.GetProperty("data").GetString()!;
-                byte[] dataBytes = Convert.FromBase64String(data);
+                byte[] dataBytes = Crypto.stringToHash(data);
                 string amount = transactionElement.GetProperty("amount").GetString()!;
                 long timestamp = long.Parse(transactionElement.GetProperty("timestamp").GetString()!);
                 ulong applied = transactionElement.GetProperty("applied").GetUInt64();
@@ -187,7 +187,10 @@ namespace IxianExplorerClient.API
 
                 // Skip if not received or sent type transaction
                 if (activity_type == -1)
+                {
+                    Logging.warn($"{addressString}: {txid} skipped");
                     return;
+                }
 
                 int status = (int)ActivityStatus.Final;
 
@@ -209,7 +212,7 @@ namespace IxianExplorerClient.API
                                                                     primary_address.ToString(),
                                                                     toList,
                                                                     activity_type,
-                                                                    Convert.FromBase64String(data),
+                                                                    dataBytes,
                                                                     toAmount.ToString(),
                                                                     timestamp,
                                                                     status,
@@ -231,7 +234,7 @@ namespace IxianExplorerClient.API
                                                     primary_address.ToString(),
                                                     toList,
                                                     activity_type,
-                                                    Convert.FromBase64String(data),
+                                                    dataBytes,
                                                     amount,
                                                     timestamp,
                                                     status,
@@ -239,11 +242,14 @@ namespace IxianExplorerClient.API
                                                     txid);
                     ActivityStorage.insertActivity(activity);
                 }
+
+                Logging.info($"{addressString}: {txid} added");
             }
             catch (Exception ex)
             {
                 Logging.warn($"Failed to process transaction for address {addressString}: {ex.Message}");
             }
+           
         }
 
         public static bool getTransactionsByAddressAsync(string addressString, int page = 1)
