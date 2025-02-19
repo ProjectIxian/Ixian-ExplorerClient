@@ -261,6 +261,11 @@ namespace IxianExplorerClient.API
                 HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, $"{Config.explorerAPIBaseUrl}/addresses/{addressString}/transactions?page={page}");
                 HttpResponseMessage response = httpClient.Send(request);
 
+                if (response.StatusCode == HttpStatusCode.NotFound)
+                {
+                    return false; 
+                }
+
                 response.EnsureSuccessStatusCode(); // Throw exception if status code is not successful
                 string content = response.Content.ReadAsStringAsync().Result;
 
@@ -297,6 +302,11 @@ namespace IxianExplorerClient.API
                 httpClient.DefaultRequestHeaders.Add("API-KEY", Config.explorerAPIKey);
                 HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, $"{Config.explorerAPIBaseUrl}/addresses/{addressString}/updates?lastTx={lastTxid}");
                 HttpResponseMessage response = httpClient.Send(request);
+
+                if (response.StatusCode == HttpStatusCode.NotFound)
+                {
+                    return false;
+                }
 
                 response.EnsureSuccessStatusCode(); // Throw exception if status code is not successful
                 string content = response.Content.ReadAsStringAsync().Result;

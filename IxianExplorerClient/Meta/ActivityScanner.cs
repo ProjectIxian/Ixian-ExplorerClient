@@ -63,6 +63,11 @@ namespace IxianExplorerClient.Meta
         private static void fetchAllTransactionsForAddress(string address)
         {
             int txCount = APIClient.getTransactionCountByAddressAsync(address);
+            if (txCount < 1)
+            {
+                return;
+            }
+
             Logging.info($"Fetching {txCount} transactions for {address}");
 
             int totalPages = (int)Math.Ceiling(txCount / (double)Config.explorerAPITransactionPaginationLimit);
