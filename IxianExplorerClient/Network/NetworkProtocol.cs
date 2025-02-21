@@ -174,8 +174,7 @@ namespace IxianExplorerClient.Network
 
                             if (Node.tiv.receivedNewTransaction(tx))
                             {
-                                Console.WriteLine("Received new transaction {0}", tx.getTxIdString());
-                                
+                                Logging.info("Received new transaction {0}", tx.getTxIdString());
                             }
                         }
                         break;

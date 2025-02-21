@@ -175,6 +175,8 @@ namespace IxianExplorerClient.Meta
                 balances.Add(new Balance(addr, 0));
             }
 
+            updateAllBalances();
+
             // Force the status to ready
             IxianHandler.status = NodeStatus.ready;
             return true;
@@ -331,7 +333,34 @@ namespace IxianExplorerClient.Meta
 
         public override IxiNumber getWalletBalance(Address id)
         {
-            return APIClient.getAmountByAddressAsync(id.ToString());
+            foreach (Balance balance in balances)
+            {
+                if (id.addressNoChecksum.SequenceEqual(balance.address.addressNoChecksum))
+                    return balance.balance;
+            }
+            return 0;
+        }
+
+        public static void updateAllBalances()
+        {
+            Logging.info("Updating all balances...");
+            foreach (Balance balance in balances)
+            {
+                balance.balance = APIClient.getAmountByAddressAsync(balance.address.ToString());
+            }
+            Logging.info("All balances updated");
+        }
+
+        public static void updateBalance(string address)
+        {
+            foreach (Balance balance in balances)
+            {
+                if (address.Equals(balance.address.ToString()))
+                {
+                    balance.balance = APIClient.getAmountByAddressAsync(address);
+                    return;
+                }
+            }
         }
 
         public override void shutdown()

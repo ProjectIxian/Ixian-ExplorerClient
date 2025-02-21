@@ -332,6 +332,8 @@ namespace IxianExplorerClient.API
             {
                 Logging.warn($"Fetching transaction activity for {addressString}: {ex.Message}");             
             }
+
+            Node.updateBalance(addressString);
             return false;
         }
       
